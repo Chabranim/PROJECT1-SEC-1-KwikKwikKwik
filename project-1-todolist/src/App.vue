@@ -8,7 +8,9 @@ import MaterialSymbolsDeleteOutline from "../src/assets/MaterialSymbolsDeleteOut
 const tasks = reactive({
   notes: [] ,
   newNote: '',
-  newDescription:''
+  newDescription:'',
+  taskList:'all',
+  color:'#fffff'
 })
 
 console.log(tasks.notes);
@@ -19,7 +21,8 @@ const add = () => {
   if (tasks.newNote.trim() !== '' || tasks.newDescription.trim() !== ''){
     tasks.notes.push({
     Title: tasks.newNote, 
-    Description: tasks.newDescription
+    Description: tasks.newDescription,
+    TaskList: tasks.taskList
     })
   }
 }
@@ -31,8 +34,27 @@ const toggleAddnote = () => {
   addNote.value = !addNote.value
 }
 //filter tag
+
+const filterTaskNote = (list) =>{
+ tasks.notes.filter( taskList => taskList.taskList === list)
+}
+
+
 //delete note
 //done note and move to category complete
+
+//change Color
+
+const changeColorNote = (color) =>{
+  if (color === 'pink') {
+     {'background-color: #'}
+  }else if (color === 'yellow' ){
+    {'background-color: #'}
+  }else if (color === 'blue'){
+    {'background-color: #'}
+  } else
+  {'background-color: white'}
+}
 </script>
 
 <template>
@@ -62,7 +84,8 @@ const toggleAddnote = () => {
           </div>
         </div>
         <div v-for=" (note, index) in tasks.notes" :key="index"
-        class=" text-white ">
+        class=" text-white " 
+        :style="changeColorNote">
             {{  note.Title }}
             {{  note.Description }}
         </div>
@@ -87,13 +110,23 @@ const toggleAddnote = () => {
               <input class="border-2 bg-gray-300"  v-model="tasks.newNote"/>
               <h1>Description</h1>
               <input class="border-2 bg-gray-300" v-model="tasks.newDescription"/>
+              <!-- <select name="colors" onchange="changeColorNote()">
+                <option value="pink">Pink</option>
+                <option value="blue">Blue</option>
+                <option value="yellow">Yellow</option>
+              </select> -->
+              <select name="taskList">
+                <option value="all">all</option>
+                <option value="workSchool">work/school</option>
+                <option value="routine">routine</option>
+              </select>
               <button type="submit" >Add</button>
             </div>
           </form>
           </div>
         </div>
         <button type="submit"
-          class="bottom-4 right-5 absolute w-12 h-12 rounded-full inline-flex items-center"
+          class="bottom-4 right-5 absolute w-12 h-12 rounded-full inline-flex items-center bg-white"
           @click="toggleAddnote()">
           <MaterialSymbolsAdd />
         </button>
