@@ -5,8 +5,26 @@ import IconParkSolidCorrect from "../src/assets/IconParkSolidCorrect.vue"
 import MaterialSymbolsAdd from "../src/assets/MaterialSymbolsAdd.vue"
 import MaterialSymbolsDeleteOutline from "../src/assets/MaterialSymbolsDeleteOutline.vue"
 //add note
+const tasks = reactive({
+  notes: [] ,
+  newNote: '',
+  newDescription:''
+})
+
+console.log(tasks.notes);
 //pop-up
-const notes = reactive([])
+ 
+const add = () => {
+  // const note = {title: noteTitle, description: noteDescription}
+  if (tasks.newNote.trim() !== '' || tasks.newDescription.trim() !== ''){
+    tasks.notes.push({
+    Title: tasks.newNote, 
+    Description: tasks.newDescription
+    })
+  }
+}
+
+
 
 const addNote = ref(false)
 const toggleAddnote = () => {
@@ -43,6 +61,11 @@ const toggleAddnote = () => {
             <span class="dot bg-[#FBFE6D]"></span>
           </div>
         </div>
+        <div v-for=" (note, index) in tasks.notes" :key="index"
+        class=" text-white ">
+            {{  note.Title }}
+            {{  note.Description }}
+        </div>
 
         <!-- v-show to add note if user click add note-->
 
@@ -57,15 +80,19 @@ const toggleAddnote = () => {
           </div> -->
         <div class="relative flex flex-col p-3" v-show="addNote">
           <div class="grid justify-items-center pt-3">
+           <!-- showing post it when user click add note -->
+            <form @submit.prevent="add">
             <div class="postit p-6">
               <h1>Title</h1>
-              <input class="border-2 bg-gray-300" />
+              <input class="border-2 bg-gray-300"  v-model="tasks.newNote"/>
               <h1>Description</h1>
-              <input class="border-2 bg-gray-300" />
+              <input class="border-2 bg-gray-300" v-model="tasks.newDescription"/>
+              <button type="submit" >Add</button>
             </div>
+          </form>
           </div>
         </div>
-        <button
+        <button type="submit"
           class="bottom-4 right-5 absolute w-12 h-12 rounded-full inline-flex items-center"
           @click="toggleAddnote()">
           <MaterialSymbolsAdd />
