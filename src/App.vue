@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from "vue"
+import { reactive, ref } from "vue"
 import { onMounted } from 'vue'
 
 
@@ -7,11 +7,14 @@ import IconParkSolidCorrect from "../src/assets/IconParkSolidCorrect.vue"
 import PepiconsPopPaintPallet from "../src/assets/PepiconsPopPaintPallet.vue"
 
 const data = reactive({
-  words: ["Red", "Blue", "Green", "Yellow", "Gray", "Orange", "Black"],
-  colors: ["black", "blue", "pink", "purple", "orange", "yellow"],
+  words: ["Red", "Blue", "Green", "Yellow", "Pink", "Orange", "Black", "Purple"],
+  colors: ["black", "blue", "pink", "purple", "orange", "yellow","red"],
   randomColorName: '',
   randomColor: ''
 })
+
+let score = ref(0)
+
 
 const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
@@ -19,39 +22,55 @@ const getRandomIndex = (max) => {
 
 
 const generateRandomColor = () => {
+
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
+  // console.log(data.randomColorName);
+  // console.log(data.randomColor);
+}
 
-}
-const randomTrue = () => {
-  data.randomColorName = generateRandomColor()
-  data.randomColor = generateRandomColor()
-}
+let correct = ref()
 const checkColor = (color) => {
-  let currentColor= data.randomColor;
-  // randomTrue()
+  console.log(color);
+  if (color.toLowerCase() === data.randomColor) {
+    correct.value = true
+    
+    // console.log(correct.value);
+    score.value++
+  } else {
+    correct.value = false
+
+    // console.log(correct.value);
+    if(score < 0){
+      score.value --
+    }
+  }
+  generateRandomColor()
 }
+// console.log(checkColor());
 
-// const generateRandomColor = () => {
-//       const randomIndex = Math.floor(Math.random() * this.colors.length);
-//       this.randomColor = this.colors[randomIndex];
-//       this.randomColorName = this.colorNames[randomIndex];
-//     }
 
-// const checkColor = () => {
-//   // Compare clicked color with current color
-//   if (data.currentWord.toLowerCase() === data.currentColor) {
-//     alert("Correct! Well done!");
-//   } else {
-//     alert("Oops! Try again.");
-//   }
-//   this.updateStroopTest();
-// }
+
+
 onMounted(() => {
   generateRandomColor();
-  // randomTrue()
+  // setInterval(generateRandomColor, 3500)
+  // checkColor()  
+  // countdownTime()
+  
 })
 
+let timer = ref('15');
+const countdownTime = setInterval(() => {
+  if (timer.value === 0) {
+    clearInterval(countdownTime)
+    // alert(`Your total score : ${score.value}`)                
+  } else {
+    timer.value--
+    // console.log(timer.value)  
+  }             
+}, 1000)
+// setTimeout(alert(`total score: ${score.value}`), 20000)
 </script>
 
 <template>
@@ -75,11 +94,29 @@ onMounted(() => {
             <span class="dot bg-[#FBFE6D]"></span>
           </div>
         </div>
-
-        <div class=" color " :style="{'background-color': 'white',color: data.randomColor}">{{ data.randomColorName }}</div>
-        <div v-for="color in data.words">
-          <button @click="checkColor(color)">{{ color }}</button>
+        <h1 class=" bg-white">Score: {{ score }}</h1>
+        <h1 class=" bg-white">Timer : {{ timer }}</h1>
+        <!-- <h1 v-show="correct == true"> Great !</h1> -->
+        <div class=" color2 bg-white" v-show="timer === 0">
+                     Game over ! your score : {{ score }}
+          <button class=" border border-black">Try again ?</button>
         </div>
+        <div v-show="timer > 0" >
+          <div  class=" color" :style="{'background-color': 'white',color: data.randomColor}">{{ data.randomColorName }}</div>
+          <div v-for="color in data.words">
+            <button @click="checkColor(color)" >{{ color }}</button>
+          </div>
+        </div>
+        <!-- <div>
+          <button @click="checkColor('red')" >Red</button>
+          <button @click="checkColor(value)">Blue</button>
+          <button @click="checkColor(value)" >Green</button>
+          <button @click="checkColor(value)" >Yellow</button>
+          <button @click="checkColor(value)" >Gray</button>
+          <button @click="checkColor(value)" >Orange</button>
+          <button @click="checkColor(value)" >Black</button>
+        </div> -->
+        
 
       </div>
     </div>
@@ -121,14 +158,26 @@ button {
 }
 
 .color {
-  font-size: 120px;
+  font-size: 170px;
   text-align: center;
-  padding: 20px;
-  margin: 5%;
+  padding: 2px;
+  margin-top: 4%;
+  margin-left: 25%;
+  margin-right: 25%;
   border-radius: 25px;
   -webkit-text-stroke: 2px black;
 }
 .stroke {
   -webkit-text-stroke: 1.5px white;
+}
+.color2 {
+  font-size: 50px;
+  text-align: center;
+  padding: 2px;
+  margin-top: 4%;
+  margin-left: 25%;
+  margin-right: 25%;
+  border-radius: 25px;
+  -webkit-text-stroke: 2px black;
 }
 </style>
