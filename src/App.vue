@@ -1,6 +1,7 @@
 <script setup>
+// function ที่เหลือ ให้นับเวลาหลังจากกด play
 import { reactive, ref } from "vue"
-import { onMounted } from 'vue'
+import { onMounted, onBeforeMount } from 'vue'
 
 
 import IconParkSolidCorrect from "../src/assets/IconParkSolidCorrect.vue"
@@ -8,12 +9,17 @@ import PepiconsPopPaintPallet from "../src/assets/PepiconsPopPaintPallet.vue"
 
 const data = reactive({
   words: ["Red", "Blue", "Green", "Yellow", "Pink", "Orange", "Black", "Purple"],
-  colors: ["black", "blue", "pink", "purple", "orange", "yellow","red"],
+  colors: ["black", "blue", "pink", "purple", "orange", "yellow", "red"],
   randomColorName: '',
   randomColor: ''
 })
 
+let timer = ref(0);
+const countdownTime = ref(null);
 let score = ref(0)
+const gameInProgress = ref(false)
+const gameOver = ref(false)
+
 
 
 const getRandomIndex = (max) => {
@@ -34,43 +40,79 @@ const checkColor = (color) => {
   console.log(color);
   if (color.toLowerCase() === data.randomColor) {
     correct.value = true
-    
+
     // console.log(correct.value);
     score.value++
   } else {
     correct.value = false
 
     // console.log(correct.value);
-    if(score < 0){
-      score.value --
+    if (score < 0) {
+      score.value--
     }
   }
   generateRandomColor()
 }
 // console.log(checkColor());
 
+onBeforeMount(() => {
+
+}),
+
+
+  onMounted(() => {
+    generateRandomColor();
+  })
+
+
+// const countdownTime = setInterval(() => {
+//   if (timer.value === 0) {
+//     clearInterval(countdownTime)
+//     // alert(`Your total score : ${score.value}`)                
+//   } else {
+//     timer.value--
+//     console.log(timer.value)  
+//   }             
+// }, 1000)
 
 
 
-onMounted(() => {
-  generateRandomColor();
-  // setInterval(generateRandomColor, 3500)
-  // checkColor()  
-  // countdownTime()
-  
-})
-
-let timer = ref('15');
-const countdownTime = setInterval(() => {
-  if (timer.value === 0) {
-    clearInterval(countdownTime)
-    // alert(`Your total score : ${score.value}`)                
-  } else {
-    timer.value--
-    // console.log(timer.value)  
-  }             
-}, 1000)
 // setTimeout(alert(`total score: ${score.value}`), 20000)
+// const startGame = () => {
+//   gameInProgress.value = true
+//   score.value = 0;
+//   timer.value = 5;
+//   generateRandomColor();
+//   // countdownTime()
+// }
+const startGame = () => {
+  gameInProgress.value = true;
+  score.value = 0;
+  timer.value = 5;
+  generateRandomColor();
+
+  // Start the countdown timer when the "Play" button is clicked
+  countdownTime.value = setInterval(() => {
+    if (timer.value === 0) {
+      clearInterval(countdownTime.value);
+      gameOverEnd();
+    } else {
+      timer.value--;
+      console.log(timer.value);
+    }
+  }, 1000);
+}
+
+const gameOverEnd = () => {
+  gameOver.value = true
+  score.value = 0;
+  timer.value = 5;
+  generateRandomColor();
+  // countdownTime()
+
+}
+
+// console.log(timer.value);
 </script>
 
 <template>
@@ -92,32 +134,43 @@ const countdownTime = setInterval(() => {
             <span class="dot bg-[#8FFF5A]"></span>
             <span class="dot bg-[#FB6161]"></span>
             <span class="dot bg-[#FBFE6D]"></span>
+            
           </div>
-        </div>
-        <h1 class=" bg-white">Score: {{ score }}</h1>
-        <h1 class=" bg-white">Timer : {{ timer }}</h1>
-        <!-- <h1 v-show="correct == true"> Great !</h1> -->
-        <div class=" color2 bg-white" v-show="timer === 0">
-                     Game over ! your score : {{ score }}
-          <button class=" border border-black">Try again ?</button>
-        </div>
-        <div v-show="timer > 0" >
-          <div  class=" color" :style="{'background-color': 'white',color: data.randomColor}">{{ data.randomColorName }}</div>
-          <div v-for="color in data.words">
-            <button @click="checkColor(color)" >{{ color }}</button>
+        </div >
+        <div class=" color2" v-if="!gameInProgress">
+          <div class="space-x-2">
+          <span class="dot1 bg-black"></span>
+          <span class="dot1 bg-purple-600"></span>
+          <span class="dot1  bg-pink-400"></span>
+          <span class="dot1 bg-[#8FFF5A]"></span>
+          <span class="dot1 bg-[#FB6161]"></span>
+          <span class="dot1 bg-[#FBFE6D]"></span>
+          <span class="dot1 bg-blue-600"></span>
+          <span class="dot1 bg-orange-400 "></span>
           </div>
+          <button  @click="startGame" class=" border border-black">Play</button>
+          
         </div>
-        <!-- <div>
-          <button @click="checkColor('red')" >Red</button>
-          <button @click="checkColor(value)">Blue</button>
-          <button @click="checkColor(value)" >Green</button>
-          <button @click="checkColor(value)" >Yellow</button>
-          <button @click="checkColor(value)" >Gray</button>
-          <button @click="checkColor(value)" >Orange</button>
-          <button @click="checkColor(value)" >Black</button>
-        </div> -->
-        
+        <div v-if="gameInProgress">
+          <!-- <h1 v-show="correct == true"> Great !</h1> -->
 
+          <div v-show="timer > 0">
+            <h1 class=" bg-white">Score: {{ score }}</h1>
+            <h1 class=" bg-white">Timer : {{ timer }}</h1>
+            <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">{{ data.randomColorName }}
+            </div>
+            <div class="flex space-x-4 px-4 justify-center mt-9">
+              <div v-for="color in data.words">
+                <button @click="checkColor(color)" class="py-2 rounded-md">{{ color }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class=" color2 bg-white" v-show="!countdownTime" v-if="gameOver">
+          Game over !
+          <div>Your score : {{ score }}</div>
+          <button class=" border border-black" @click="startGame">Try again ?</button>
+        </div>
       </div>
     </div>
   </div>
@@ -127,6 +180,10 @@ const countdownTime = setInterval(() => {
 @font-face {
   font-family: "dbheavent";
   src: url("./fonts/DBHeaventBd/DBHeavent.ttf") format("truetype");
+}
+
+.buttonPlay{
+  
 }
 
 button {
@@ -143,11 +200,11 @@ button {
   display: inline-block;
 }
 
-.postit {
-  height: 30rem;
-  width: 30rem;
-  border-radius: 1em;
-  background-color: white;
+.dot1 {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
 .centerdiv {
@@ -167,17 +224,18 @@ button {
   border-radius: 25px;
   -webkit-text-stroke: 2px black;
 }
+
 .stroke {
   -webkit-text-stroke: 1.5px white;
 }
+
 .color2 {
   font-size: 50px;
   text-align: center;
   padding: 2px;
   margin-top: 4%;
-  margin-left: 25%;
-  margin-right: 25%;
+  margin-left: 20%;
+  margin-right: 20%;
   border-radius: 25px;
   -webkit-text-stroke: 2px black;
-}
-</style>
+}</style>
