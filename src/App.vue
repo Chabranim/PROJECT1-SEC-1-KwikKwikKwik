@@ -8,19 +8,17 @@ import IconParkSolidCorrect from "../src/assets/IconParkSolidCorrect.vue"
 import PepiconsPopPaintPallet from "../src/assets/PepiconsPopPaintPallet.vue"
 
 const data = reactive({
-  words: ["Red", "Blue", "Green", "Yellow", "Pink", "Orange", "Black", "Purple"],
+  words: ["RED", "BLUE", "GREEN", "YELLOW", "PINK", "ORANGE", "BLACK", "PURPLE"],
   colors: ["black", "blue", "pink", "purple", "orange", "yellow", "red"],
   randomColorName: '',
   randomColor: ''
 })
 
 let timer = ref(0);
-const countdownTime = ref(null);
+// const countdownTime = ref(null);
 let score = ref(0)
 const gameInProgress = ref(false)
 const gameOver = ref(false)
-
-
 
 const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
@@ -28,7 +26,6 @@ const getRandomIndex = (max) => {
 
 
 const generateRandomColor = () => {
-
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
   // console.log(data.randomColorName);
@@ -59,60 +56,36 @@ onBeforeMount(() => {
 
 }),
 
-
-  onMounted(() => {
+onMounted(() => {
     generateRandomColor();
   })
 
-
-// const countdownTime = setInterval(() => {
-//   if (timer.value === 0) {
-//     clearInterval(countdownTime)
-//     // alert(`Your total score : ${score.value}`)                
-//   } else {
-//     timer.value--
-//     console.log(timer.value)  
-//   }             
-// }, 1000)
-
-
-
-// setTimeout(alert(`total score: ${score.value}`), 20000)
-// const startGame = () => {
-//   gameInProgress.value = true
-//   score.value = 0;
-//   timer.value = 5;
-//   generateRandomColor();
-//   // countdownTime()
-// }
-const startGame = () => {
-  gameInProgress.value = true;
-  score.value = 0;
-  timer.value = 5;
-  generateRandomColor();
-
-  // Start the countdown timer when the "Play" button is clicked
-  countdownTime.value = setInterval(() => {
+const startCountdownTimer = () => {
+  const countdownInterval = setInterval(() => {
     if (timer.value === 0) {
-      clearInterval(countdownTime.value);
-      gameOverEnd();
+      clearInterval(countdownInterval)
+      gameOver.value = true
     } else {
-      timer.value--;
-      console.log(timer.value);
+      timer.value--
     }
   }, 1000);
 }
 
-const gameOverEnd = () => {
-  gameOver.value = true
-  score.value = 0;
-  timer.value = 5;
-  generateRandomColor();
-  // countdownTime()
-
+const startGame = () => {
+  gameInProgress.value = true;
+  score.value = 0
+  timer.value = 10
+  generateRandomColor()
+  startCountdownTimer()
 }
 
-// console.log(timer.value);
+const gameOverEnd = () => {
+  gameOver.value = false
+  score.value = 0
+  timer.value = 10
+  generateRandomColor()
+  startCountdownTimer()
+}
 </script>
 
 <template>
@@ -166,10 +139,10 @@ const gameOverEnd = () => {
             </div>
           </div>
         </div>
-        <div class=" color2 bg-white" v-show="!countdownTime" v-if="gameOver">
+        <div class=" color2 bg-white" v-show="timer === 0 && gameOver">
           Game over !
           <div>Your score : {{ score }}</div>
-          <button class=" border border-black" @click="startGame">Try again ?</button>
+          <button class=" border border-black" @click="gameOverEnd">Try again ?</button>
         </div>
       </div>
     </div>
@@ -182,9 +155,9 @@ const gameOverEnd = () => {
   src: url("./fonts/DBHeaventBd/DBHeavent.ttf") format("truetype");
 }
 
-.buttonPlay{
+/* .buttonPlay{
   
-}
+} */
 
 button {
   border-radius: 12px;
