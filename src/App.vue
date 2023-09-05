@@ -18,12 +18,12 @@ let timer = ref(0);
 // const countdownTime = ref(null);
 let score = ref(0)
 const gameInProgress = ref(false)
-const gameOver = ref(false)
+const gameOver = ref(true)
 
+// 1
 const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
 }
-
 
 const generateRandomColor = () => {
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
@@ -32,17 +32,17 @@ const generateRandomColor = () => {
   // console.log(data.randomColor);
 }
 
-let correct = ref()
+// let correct = ref()
+// 2
 const checkColor = (color) => {
   console.log(color);
   if (color.toLowerCase() === data.randomColor) {
-    correct.value = true
+    // correct.value = true
 
     // console.log(correct.value);
     score.value++
   } else {
-    correct.value = false
-
+    // correct.value = false
     // console.log(correct.value);
     if (score < 0) {
       score.value--
@@ -52,14 +52,12 @@ const checkColor = (color) => {
 }
 // console.log(checkColor());
 
-onBeforeMount(() => {
 
-}),
 
 onMounted(() => {
     generateRandomColor();
   })
-
+// 3
 const startCountdownTimer = () => {
   const countdownInterval = setInterval(() => {
     if (timer.value === 0) {
@@ -70,7 +68,7 @@ const startCountdownTimer = () => {
     }
   }, 1000);
 }
-
+// 4
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0
@@ -86,6 +84,8 @@ const gameOverEnd = () => {
   generateRandomColor()
   startCountdownTimer()
 }
+
+
 </script>
 
 <template>
@@ -138,12 +138,13 @@ const gameOverEnd = () => {
               </div>
             </div>
           </div>
-        </div>
-        <div class=" color2 bg-white" v-show="timer === 0 && gameOver">
+          <div class=" color2 bg-white" v-show="timer === 0" v-if="gameOver">
           Game over !
           <div>Your score : {{ score }}</div>
           <button class=" border border-black" @click="gameOverEnd">Try again ?</button>
         </div>
+        </div>
+        
       </div>
     </div>
   </div>
