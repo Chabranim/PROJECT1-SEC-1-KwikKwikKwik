@@ -45,7 +45,7 @@ const checkColor = (color) => {
     // correct.value = false
     // console.log(correct.value);
     if (score < 0) {
-      
+
       score.value--
     }
   }
@@ -56,8 +56,8 @@ const checkColor = (color) => {
 
 
 onMounted(() => {
-    generateRandomColor();
-  })
+  generateRandomColor();
+})
 // 3
 const startCountdownTimer = () => {
   const countdownInterval = setInterval(() => {
@@ -87,7 +87,7 @@ const gameOverEnd = () => {
 }
 
 
-const closeTheGame = () =>{
+const closeTheGame = () => {
   gameInProgress.value = false
   // score.value = 0
   // timer.value = 10
@@ -116,47 +116,51 @@ const closeTheGame = () =>{
             <span class="dot bg-[#8FFF5A]"></span>
             <span class="dot bg-[#FB6161]"></span>
             <span class="dot bg-[#FBFE6D]"></span>
-            
+
           </div>
-        </div >
+        </div>
         <div class=" color2" v-if="!gameInProgress">
           <div class="space-x-2">
-          <span class="dot1 bg-black "></span>
-          <span class="dot1 bg-purple-600"></span>
-          <span class="dot1  bg-pink-400"></span>
-          <span class="dot1 bg-[#8FFF5A]"></span>
-          <span class="dot1 bg-[#FB6161]"></span>
-          <span class="dot1 bg-[#FBFE6D]"></span>
-          <span class="dot1 bg-blue-600"></span>
-          <span class="dot1 bg-orange-400 "></span>
+            <span class="dot1 bg-black "></span>
+            <span class="dot1 bg-purple-600"></span>
+            <span class="dot1  bg-pink-400"></span>
+            <span class="dot1 bg-[#8FFF5A]"></span>
+            <span class="dot1 bg-[#FB6161]"></span>
+            <span class="dot1 bg-[#FBFE6D]"></span>
+            <span class="dot1 bg-blue-600"></span>
+            <span class="dot1 bg-orange-400 "></span>
           </div>
-          <button  @click="startGame" class=" border border-black buttonClick ">Play</button>
-          
+          <button @click="startGame" class=" border border-black buttonClick ">Play</button>
+
         </div>
-        
+
         <div v-if="gameInProgress">
           <!-- <h1 v-show="correct == true"> Great !</h1> -->
           <div class=" justify-end text-red-500">
-              <button  @click="closeTheGame"><MaterialSymbolsCancel/></button>
+            <button @click="closeTheGame">
+              <MaterialSymbolsCancel />
+            </button>
           </div>
           <div v-show="timer > 0">
             <h1 class=" bg-white">Score: {{ score }}</h1>
             <h1 class=" bg-white">Timer : {{ timer }}</h1>
-            <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">{{ data.randomColorName }}
+            <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">{{ data.randomColorName
+            }}
             </div>
             <div class="flex space-x-4 px-4 justify-center mt-9">
               <div v-for="color in data.words">
-                <button @click="checkColor(color)" class="py-2 rounded-md buttonClick ">{{ color }}</button>
+                <button @click="checkColor(color)" class="py-2 rounded-md buttonClick "
+                  :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color }}</button>
               </div>
             </div>
           </div>
-          <div class=" color2 bg-white" v-show="timer === 0" v-if="gameOver">
-          Game over !
-          <div>Your score : {{ score }}</div>
-          <button class=" border border-black buttonClick " @click="gameOverEnd">Try again ?</button>
+          <div class=" color2 bg-white" v-if="timer === 0">
+            Game over !
+            <div>Your score : {{ score }}</div>
+            <button class=" border border-black buttonClick " @click="gameOverEnd">Try again ?</button>
+          </div>
         </div>
-        </div>
-        
+
       </div>
     </div>
   </div>
