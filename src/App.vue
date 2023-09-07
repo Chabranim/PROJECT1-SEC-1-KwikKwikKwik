@@ -19,6 +19,8 @@ let timer = ref(0);
 let score = ref(0)
 const gameInProgress = ref(false)
 const gameOver = ref(true)
+const namePlayer = ref('')
+const playerPage = ref(false)
 
 // 1
 const getRandomIndex = (max) => {
@@ -89,13 +91,13 @@ const gameOverEnd = () => {
 
 const closeTheGame = () => {
   gameInProgress.value = false
+  playerPage.value = false
+  namePlayer.value = ''
   // score.value = 0
   // timer.value = 10
   // generateRandomColor()
 
 }
-const namePlayer = ref('')
-const playerPage = ref(false)
 
 const namePlayerPage = () => {
   playerPage.value = true
@@ -149,7 +151,8 @@ const namePlayerPage = () => {
               <div class="text-white text-4xl ">Enter you name</div>
 
               <span><input type="text" class="text-3xl" v-model="namePlayer"></span>
-              <button @click="startGame" class=" border border-black buttonClick ">Next</button>
+              <span v-if="namePlayer.length === 0">Please type your name</span>
+              <button @click="startGame" class=" border border-black buttonClick " :disabled="namePlayer.length === 0">Next</button>
               <div class="mt">
                 <label for="my_modal_6" class="btn">How to play ❔</label>
                 <input type="checkbox" id="my_modal_6" class="modal-toggle" />
@@ -197,11 +200,7 @@ const namePlayerPage = () => {
           </div>
         </div>
 
-
-
-
-
-
+        
         <div v-if="gameInProgress">
           <!-- <h1 v-show="correct == true"> Great !</h1> -->
           <div class=" justify-end text-red-500">
