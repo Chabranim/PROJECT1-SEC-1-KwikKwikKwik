@@ -94,10 +94,17 @@ const closeTheGame = () => {
   // generateRandomColor()
 
 }
+const namePlayer = ref('')
+const playerPage = ref(false)
+
+const namePlayerPage = () => {
+  playerPage.value = true
+}
 
 </script>
 
 <template>
+  <!-- default -->
   <div class="w-full h-screen pb-3 bg-[url('../src/assets/FluentEmojiFlatPaintbrush.svg')]">
     <div class="bg-[#67274C] p-4 absolute w-full">
       <div class="flex items-center text-[#E9BCB9] space-x-2 justify-center">
@@ -130,9 +137,70 @@ const closeTheGame = () => {
             <span class="dot1 bg-blue-600"></span>
             <span class="dot1 bg-orange-400 "></span>
           </div>
-          <button @click="startGame" class=" border border-black buttonClick ">Play</button>
+          <button v-if="!playerPage" @click="namePlayerPage" class=" border border-black buttonClick ">Play</button>
 
         </div>
+
+        <!-- เขียนชื่อ -->
+        <div v-if="playerPage && !gameInProgress">
+          <div class="w-full h-full">
+            <div class="flex flex-col items-center space-y-20 space-x-1">
+
+              <div class="text-white text-4xl ">Enter you name</div>
+
+              <span><input type="text" class="text-3xl" v-model="namePlayer"></span>
+              <button @click="startGame" class=" border border-black buttonClick ">Next</button>
+              <div class="mt">
+                <label for="my_modal_6" class="btn">How to play ❔</label>
+                <input type="checkbox" id="my_modal_6" class="modal-toggle" />
+                <div class="modal">
+                  <div class="modal-box">
+                    <h3 class="font-bold text-lg text-center">Instruction</h3>
+                    <p class="py-4">
+                    <div class="list-decimal">
+                      <li>Once the game starts, the timer will begin counting down from a certain value (e.g., 5
+                        seconds).
+                      </li>
+                      <li>
+                        Look at the words displayed on the screen. Each word is written in a specific color.
+                      </li>
+                      <li>
+                        Your goal is to click on the word that matches the color of the text, not the text itself. For
+                        example:
+                        - If the word "Red" is displayed in blue color, click on the word "Red."
+                        - If the word "Green" is displayed in green color, click on the word "Green."
+                      </li>
+                      <li>
+                        Continue making selections as quickly as possible within the time limit.
+                      </li>
+                      <li>
+                        You earn one point for each correct selection.
+                      </li>
+                      <li>
+                        The game ends when the timer reaches 0.
+                      </li>
+                      <div>
+                        <h1 class="font-bold text-lg ">Tips:</h1>
+                        <li>Focus on the color of the text rather than reading the word.</li>
+                        <li>Try to make quick decisions to maximize your score within the time limit.</li>
+                      </div>
+                    </div>
+
+                    </p>
+                    <div class="modal-action">
+                      <label for="my_modal_6" class="btn">Close!</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
 
         <div v-if="gameInProgress">
           <!-- <h1 v-show="correct == true"> Great !</h1> -->
@@ -142,6 +210,7 @@ const closeTheGame = () => {
             </button>
           </div>
           <div v-show="timer > 0">
+            <h1 class=" bg-white">Name : {{ namePlayer }}</h1>
             <h1 class=" bg-white">Score: {{ score }}</h1>
             <h1 class=" bg-white">Timer : {{ timer }}</h1>
             <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">{{ data.randomColorName
@@ -150,13 +219,14 @@ const closeTheGame = () => {
             <div class="flex space-x-4 px-4 justify-center mt-9">
               <div v-for="color in data.words">
                 <button @click="checkColor(color)" class="py-2 rounded-md buttonClick "
-                  :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color }}</button>
+                  :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color
+                  }}</button>
               </div>
             </div>
           </div>
           <div class=" color2 bg-white" v-if="timer === 0">
             Game over !
-            <div>Your score : {{ score }}</div>
+            <div>{{ namePlayer }} score : {{ score }}</div>
             <button class=" border border-black buttonClick " @click="gameOverEnd">Try again ?</button>
           </div>
         </div>
@@ -230,4 +300,5 @@ const closeTheGame = () => {
   margin-right: 20%;
   border-radius: 25px;
   -webkit-text-stroke: 2px black;
-}</style>
+}
+</style>
