@@ -15,12 +15,15 @@ const data = reactive({
 })
 
 let timer = ref(0);
+
 // const countdownTime = ref(null);
 let score = ref(0)
 const gameInProgress = ref(false)
 const gameOver = ref(true)
 const namePlayer = ref('')
 const playerPage = ref(false)
+const progressWidth = ref('')
+const currentTime = ref(30)
 
 // 1
 const getRandomIndex = (max) => {
@@ -74,21 +77,22 @@ onMounted(() => {
   randomButton();
 })
 // 3
-const startCountdownTimer = () => {
-  const countdownInterval = setInterval(() => {
+const startCountdownTimer =  setInterval(() => {
+  progressWidth.value='100%'
     if (timer.value === 0) {
-      clearInterval(countdownInterval)
+      clearInterval()
       gameOver.value = true
-    } else {
+    } else if(timer.value > 0) {
       timer.value--
+      progressWidth.value=(timer.value/currentTime.value)*100+'%'
     }
   }, 1000);
-}
+
 // 4
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0
-  timer.value = 10
+  timer.value = currentTime.value
   generateRandomColor()
   startCountdownTimer()
 }
@@ -96,7 +100,7 @@ const startGame = () => {
 const gameOverEnd = () => {
   gameOver.value = false
   score.value = 0
-  timer.value = 10
+  timer.value = currentTime.value
   generateRandomColor()
   startCountdownTimer()
 }
@@ -106,10 +110,6 @@ const closeTheGame = () => {
   gameInProgress.value = false
   playerPage.value = false
   namePlayer.value = ''
-  // score.value = 0
-  // timer.value = 10
-  // generateRandomColor()
-
 }
 
 const namePlayerPage = () => {
@@ -224,9 +224,10 @@ const namePlayerPage = () => {
           <div v-show="timer > 0">
             <h1 class=" bg-white">Name : {{ namePlayer }}</h1>
             <h1 class=" bg-white">Score: {{ score }}</h1>
-            <h1 class=" bg-white">Timer : {{ timer }}</h1>
-            <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">{{ data.randomColorName
-            }}
+            <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
+            <div class="progressBar" :style="{width:progressWidth}"></div>
+            <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">
+            <span class="m-auto ">{{ data.randomColorName }}</span> 
             </div>
             <div class="flex space-x-4 px-4 justify-center mt-9">
               <div v-for="color in shuffledArray" :style="{background: color}">
@@ -257,6 +258,10 @@ const namePlayerPage = () => {
 /* .buttonPlay{
   
 } */
+.progressBar{
+  background-color: aquamarine;
+  height: 20px;
+}
 
 .buttonClick {
   border-radius: 12px;
