@@ -27,6 +27,17 @@ const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
 }
 
+let shuffledArray = ref([])
+
+const randomButton = () => {
+    shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
+    .map(value => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: }
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+
+}
+
+
 const generateRandomColor = () => {
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
@@ -52,6 +63,7 @@ const checkColor = (color) => {
     }
   }
   generateRandomColor()
+  randomButton()
 }
 // console.log(checkColor());
 
@@ -59,6 +71,7 @@ const checkColor = (color) => {
 
 onMounted(() => {
   generateRandomColor();
+  randomButton();
 })
 // 3
 const startCountdownTimer = () => {
@@ -216,7 +229,7 @@ const namePlayerPage = () => {
             }}
             </div>
             <div class="flex space-x-4 px-4 justify-center mt-9">
-              <div v-for="color in data.words">
+              <div v-for="color in shuffledArray" :style="{background: color}">
                 <button @click="checkColor(color)" class="py-2 rounded-md buttonClick "
                   :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color
                   }}</button>
