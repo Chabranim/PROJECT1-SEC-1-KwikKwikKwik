@@ -14,16 +14,20 @@ const data = reactive({
   randomColor: ''
 })
 
-let timer = ref(0);
 
-// const countdownTime = ref(null);
+
+
 let score = ref(0)
+let timer = ref(0);
 const gameInProgress = ref(false)
 const gameOver = ref(true)
 const namePlayer = ref('')
 const playerPage = ref(false)
 const progressWidth = ref('')
-const currentTime = ref(30)
+const modeGame = ref(false)
+const playGame = ref(false)
+const currentTime = ref(0)
+
 
 // 1
 const getRandomIndex = (max) => {
@@ -33,7 +37,7 @@ const getRandomIndex = (max) => {
 let shuffledArray = ref([])
 
 const randomButton = () => {
-    shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
+  shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
     .map(value => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: }
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value)
@@ -77,32 +81,39 @@ onMounted(() => {
   randomButton();
 })
 // 3
-const startCountdownTimer =  setInterval(() => {
-  progressWidth.value='100%'
-    if (timer.value === 0) {
-      clearInterval()
-      gameOver.value = true
-    } else if(timer.value > 0) {
-      timer.value--
-      progressWidth.value=(timer.value/currentTime.value)*100+'%'
+
+
+const startCountdownTimer =()=>{
+  let countdownTimer = setInterval(()=>{
+    timer.value--
+    if(timer.value > 0){
+      progressWidth.value = (timer.value/currentTime.value) * 100 + '%'
     }
-  }, 1000);
+    if(timer.value<=0){
+      clearInterval(countdownTimer)
+      gameOver.value=true
+      timer.value=0
+      currentTime.value=0
+    }
+  },1000)
+}
+
 
 // 4
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0
+  modeGame.value = false
   timer.value = currentTime.value
   generateRandomColor()
-  startCountdownTimer()
 }
 
 const gameOverEnd = () => {
   gameOver.value = false
   score.value = 0
-  timer.value = currentTime.value
+  progressWidth.value = "0"
+  modeGame.value = true
   generateRandomColor()
-  startCountdownTimer()
 }
 
 
@@ -110,10 +121,51 @@ const closeTheGame = () => {
   gameInProgress.value = false
   playerPage.value = false
   namePlayer.value = ''
+  modeGame.value = false
+  score.value = 0
+  timer.value = 1
 }
 
 const namePlayerPage = () => {
   playerPage.value = true
+}
+
+const changeTime = (time) => {
+  console.log(time);
+  if (time === 'easy') {
+    currentTime.value = 20
+    playGame.value = true
+  }
+  if (time === 'medium') {
+    currentTime.value = 15
+    playGame.value = true
+  }
+  if (time === 'hard') {
+    currentTime.value = 10
+    playGame.value = true
+  }
+  progressWidth.value = '100%'
+  startGame()
+  startCountdownTimer()
+
+}
+
+// const changeTime = (time) => {
+//   if (time === 'easy') {
+//     currentTime.value = 20;
+//   } else if (time === 'medium') {
+//     currentTime.value = 15;
+//   } else {
+//     currentTime.value = 10;
+//   }
+//   playGame.value = true;
+//   startGame()
+// }
+
+const selectedMode = () => {
+  modeGame.value = true
+  playerPage.value = false
+  gameInProgress.value = true
 }
 
 </script>
@@ -164,8 +216,9 @@ const namePlayerPage = () => {
               <div class="text-white text-4xl ">Enter you name</div>
 
               <span><input type="text" class="text-3xl" v-model="namePlayer"></span>
-              <span v-if="namePlayer.length === 0">Please type your name</span>
-              <button @click="startGame" class=" border border-black buttonClick " :disabled="namePlayer.length === 0">Next</button>
+              <span class="text-white" v-if="namePlayer.length === 0">Please type your name</span>
+              <button @click="selectedMode" class=" border border-black buttonClick "
+                :disabled="namePlayer.length === 0">Next</button>
               <div class="mt">
                 <label for="my_modal_6" class="btn">How to play ❔</label>
                 <input type="checkbox" id="my_modal_6" class="modal-toggle" />
@@ -211,10 +264,16 @@ const namePlayerPage = () => {
               </div>
             </div>
           </div>
+
         </div>
 
-        
-        <div v-if="gameInProgress">
+        <div class="text-white" v-if="modeGame && !playerPage">
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded" @click="changeTime('easy')">Easy</button>
+          <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 border border-yellow-700 rounded" @click="changeTime('medium')">Medium</button>
+          <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded" @click="changeTime('hard')">Hard</button>
+        </div>
+
+        <div v-if="gameInProgress && playGame && !modeGame">
           <!-- <h1 v-show="correct == true"> Great !</h1> -->
           <div class=" justify-end text-red-500">
             <button @click="closeTheGame">
@@ -225,19 +284,19 @@ const namePlayerPage = () => {
             <h1 class=" bg-white">Name : {{ namePlayer }}</h1>
             <h1 class=" bg-white">Score: {{ score }}</h1>
             <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
-            <div class="progressBar" :style="{width:progressWidth}"></div>
+            <div class="progressBar" :style="{ width: progressWidth }"></div>
             <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">
-            <span class="m-auto ">{{ data.randomColorName }}</span> 
+              <span class="m-auto ">{{ data.randomColorName }}</span>
             </div>
             <div class="flex space-x-4 px-4 justify-center mt-9">
-              <div v-for="color in shuffledArray" :style="{background: color}">
+              <div v-for="color in shuffledArray" :style="{ background: color }">
                 <button @click="checkColor(color)" class="py-2 rounded-md buttonClick "
                   :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color
                   }}</button>
               </div>
             </div>
           </div>
-          <div class=" color2 bg-white" v-if="timer === 0">
+          <div class=" color2 bg-white" v-if="timer <= 0">
             Game over !
             <div>{{ namePlayer }} score : {{ score }}</div>
             <button class=" border border-black buttonClick " @click="gameOverEnd">Try again ?</button>
@@ -255,10 +314,7 @@ const namePlayerPage = () => {
   src: url("./fonts/DBHeaventBd/DBHeavent.ttf") format("truetype");
 }
 
-/* .buttonPlay{
-  
-} */
-.progressBar{
+.progressBar {
   background-color: aquamarine;
   height: 20px;
 }
