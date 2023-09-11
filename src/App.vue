@@ -1,7 +1,7 @@
 <script setup>
 // function ที่เหลือ ให้นับเวลาหลังจากกด play
 import { reactive, ref } from "vue"
-import { onMounted, onBeforeMount } from 'vue'
+import { onMounted } from 'vue'
 
 
 import MaterialSymbolsCancel from "../src/assets/MaterialSymbolsCancel.vue"
@@ -20,13 +20,14 @@ const data = reactive({
 let score = ref(0)
 let timer = ref(0);
 const gameInProgress = ref(false)
-const gameOver = ref(true)
+// const gameOver = ref(false)
 const namePlayer = ref('')
 const playerPage = ref(false)
 const progressWidth = ref('')
 const modeGame = ref(false)
-const playGame = ref(false)
-const currentTime = ref(0)
+// const playGame = ref(false)
+const timeOfMode = ref(0)
+let shuffledArray = ref([])
 
 
 // 1
@@ -34,82 +35,92 @@ const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
 }
 
-let shuffledArray = ref([])
-
-const randomButton = () => {
-  shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
-    .map(value => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: }
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value)
-
-}
-
 
 const generateRandomColor = () => {
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
-  // console.log(data.randomColorName);
-  // console.log(data.randomColor);
 }
 
-// let correct = ref()
-// 2
+
+//2
+const randomButton = () => {
+  shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
+    .map(value => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: } map return new arr
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)  //return new array
+}
+
+
+// 3
 const checkColor = (color) => {
   console.log(color);
   if (color.toLowerCase() === data.randomColor) {
-    // correct.value = true
-
-    // console.log(correct.value);
     score.value++
   } else {
-    // correct.value = false
-    // console.log(correct.value);
     if (score < 0) {
-
       score.value--
     }
   }
   generateRandomColor()
   randomButton()
 }
-// console.log(checkColor());
-
 
 
 onMounted(() => {
   generateRandomColor();
   randomButton();
 })
-// 3
-
-
-const startCountdownTimer =()=>{
-  let countdownTimer = setInterval(()=>{
-    timer.value--
-    if(timer.value > 0){
-      progressWidth.value = (timer.value/currentTime.value) * 100 + '%'
-    }
-    if(timer.value<=0){
-      clearInterval(countdownTimer)
-      gameOver.value=true
-      timer.value=0
-      currentTime.value=0
-    }
-  },1000)
-}
 
 
 // 4
+const startCountdownTimer = () => {
+  console.log(timer.value);
+  let countdownTimer = setInterval(() => {
+    console.log(timer.value);
+    timer.value--
+    if (timer.value > 0) {
+      progressWidth.value = (timer.value / timeOfMode.value) * 100 + '%'
+      console.log(progressWidth.value);
+    }
+    if (timer.value <= 0) {
+      clearInterval(countdownTimer)
+      // gameOver.value=false
+      timer.value = 0
+      timeOfMode.value = 0
+    }
+  }, 1000)
+}
+
+//5
+const changeMode = (mode) => {
+  console.log(mode);
+  if (mode === 'easy') {
+    timeOfMode.value = 20
+  }
+  if (mode === 'medium') {
+    timeOfMode.value = 15
+  }
+  if (mode === 'hard') {
+    timeOfMode.value = 10
+  }
+  gameInProgress.value = true
+  progressWidth.value = '100%'
+  startGame()
+  startCountdownTimer()
+}
+
+
+// 6
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0
   modeGame.value = false
-  timer.value = currentTime.value
+  timer.value = timeOfMode.value
   generateRandomColor()
 }
 
 const gameOverEnd = () => {
-  gameOver.value = false
+  // gameOver.value = true
   score.value = 0
   progressWidth.value = "0"
   modeGame.value = true
@@ -123,56 +134,27 @@ const closeTheGame = () => {
   namePlayer.value = ''
   modeGame.value = false
   score.value = 0
-  timer.value = 1
+  timer.value = 0
 }
 
-const namePlayerPage = () => {
+// bas
+const clickToNamePlayerPage = () => {
   playerPage.value = true
 }
+// bas
 
-const changeTime = (time) => {
-  console.log(time);
-  if (time === 'easy') {
-    currentTime.value = 20
-    playGame.value = true
-  }
-  if (time === 'medium') {
-    currentTime.value = 15
-    playGame.value = true
-  }
-  if (time === 'hard') {
-    currentTime.value = 10
-    playGame.value = true
-  }
-  progressWidth.value = '100%'
-  startGame()
-  startCountdownTimer()
-
-}
-
-// const changeTime = (time) => {
-//   if (time === 'easy') {
-//     currentTime.value = 20;
-//   } else if (time === 'medium') {
-//     currentTime.value = 15;
-//   } else {
-//     currentTime.value = 10;
-//   }
-//   playGame.value = true;
-//   startGame()
-// }
-
-const selectedMode = () => {
+const clickToSelectMode = () => {
   modeGame.value = true
-  playerPage.value = false
+  // playerPage.value = false
   gameInProgress.value = true
 }
+
 
 </script>
 
 <template>
   <!-- default -->
-  <div class="w-full h-screen pb-3 bg-[url('../src/assets/FluentEmojiFlatPaintbrush.svg')]">
+  <div class="w-full h-screen pb-3 bg-[url('../src/assets/FluentEmojiFlatPaintbrush.svg')] bg-white">
     <div class="bg-[#67274C] p-4 absolute w-full">
       <div class="flex items-center text-[#E9BCB9] space-x-2 justify-center">
         <span class="text-[#E9BCB9] text-4xl ml-5 font-extrabold">Click the color
@@ -184,8 +166,8 @@ const selectedMode = () => {
     <div class="flex space-x-3 pr-24 pl-24 pt-24 h-full pb-1">
 
 
-      <div class="w-full bg-[#312C58] rounded-xl">
-        <div class="flex bg-[#1D1A39] rounded-t-xl justify-end">
+      <div class="w-full bg-gradient-to-l from-[#B296FF] to-[#C1D2DC]  rounded-xl">
+        <div class="flex bg-[#492154] rounded-t-xl justify-end">
           <div class="flex space-x-2 justify-end m-2 p-1">
             <span class="dot bg-[#8FFF5A]"></span>
             <span class="dot bg-[#FB6161]"></span>
@@ -193,9 +175,13 @@ const selectedMode = () => {
 
           </div>
         </div>
-        <div class=" color2" v-if="!gameInProgress">
-          <div class="space-x-2">
-            <span class="dot1 bg-black "></span>
+        <div class=" flex flex-col  mt-20 mb-9 space-y-10" v-if="!gameInProgress && !playerPage">
+          <!-- <div class=" space-x-2 flex flex-col
+          bg-gradient-to-l from-green-200 to-[#C1D2DC] m-10">  
+          </div> -->
+          <!-- <img src="../src/assets/colorful-paint.jpg" width="500" height="250" class=" rounded-md"> -->
+          <div class="space-x-2 flex justify-center">
+            <!-- <span class="dot1 bg-black "></span> -->
             <span class="dot1 bg-purple-600"></span>
             <span class="dot1  bg-pink-400"></span>
             <span class="dot1 bg-[#8FFF5A]"></span>
@@ -204,87 +190,90 @@ const selectedMode = () => {
             <span class="dot1 bg-blue-600"></span>
             <span class="dot1 bg-orange-400 "></span>
           </div>
-          <button v-if="!playerPage" @click="namePlayerPage" class=" border border-black buttonClick ">Play</button>
+          <button @click="clickToNamePlayerPage"
+            class=" buttonClick1 bg-[#312B5D] hover:bg-[#1C1743] text-white ">Play</button>
 
-        </div>
-
-        <!-- เขียนชื่อ -->
-        <div v-if="playerPage && !gameInProgress">
-          <div class="w-full h-full">
-            <div class="flex flex-col items-center space-y-20 space-x-1">
-
-              <div class="text-white text-4xl ">Enter you name</div>
-
-              <span><input type="text" class="text-3xl" v-model="namePlayer"></span>
-              <span class="text-white" v-if="namePlayer.length === 0">Please type your name</span>
-              <button @click="selectedMode" class=" border border-black buttonClick "
-                :disabled="namePlayer.length === 0">Next</button>
-              <div class="mt">
-                <label for="my_modal_6" class="btn">How to play ❔</label>
-                <input type="checkbox" id="my_modal_6" class="modal-toggle" />
-                <div class="modal">
-                  <div class="modal-box">
-                    <h3 class="font-bold text-lg text-center">Instruction</h3>
-                    <p class="py-4">
-                    <div class="list-decimal">
-                      <li>Once the game starts, the timer will begin counting down from a certain value (e.g., 5
-                        seconds).
-                      </li>
-                      <li>
-                        Look at the words displayed on the screen. Each word is written in a specific color.
-                      </li>
-                      <li>
-                        Your goal is to click on the word that matches the color of the text, not the text itself. For
-                        example:
-                        - If the word "Red" is displayed in blue color, click on the word "Red."
-                        - If the word "Green" is displayed in green color, click on the word "Green."
-                      </li>
-                      <li>
-                        Continue making selections as quickly as possible within the time limit.
-                      </li>
-                      <li>
-                        You earn one point for each correct selection.
-                      </li>
-                      <li>
-                        The game ends when the timer reaches 0.
-                      </li>
-                      <div>
-                        <h1 class="font-bold text-lg ">Tips:</h1>
-                        <li>Focus on the color of the text rather than reading the word.</li>
-                        <li>Try to make quick decisions to maximize your score within the time limit.</li>
-                      </div>
-                    </div>
-
-                    </p>
-                    <div class="modal-action">
-                      <label for="my_modal_6" class="btn">Close!</label>
-                    </div>
+          <div class=" flex justify-center ">
+            <label for="my_modal_6" class="btn">How to play ❔</label>
+            <input type="checkbox" id="my_modal_6" class="modal-toggle" />
+            <div class="modal">
+              <div class="modal-box">
+                <h3 class="font-bold text-lg text-center">Instruction</h3>
+                <p class="py-4">
+                <div class="list-decimal">
+                  <li>Once the game starts, the timer will begin counting down from a certain value (e.g., 5 seconds).
+                  </li>
+                  <li>Look at the words displayed on the screen. Each word is written in a specific color.
+                  </li>
+                  <li>Your goal is to click on the word that matches the color of the text, not the text itself. For
+                    example:
+                    - If the word "Red" is displayed in blue color, click on the word "Red."
+                    - If the word "Green" is displayed in green color, click on the word "Green."
+                  </li>
+                  <li>Continue making selections as quickly as possible within the time limit.</li>
+                  <li>
+                    You earn one point for each correct selection.
+                  </li>
+                  <li>
+                    The game ends when the timer reaches 0.
+                  </li>
+                  <div>
+                    <h1 class="font-bold text-lg ">Tips:</h1>
+                    <li>Focus on the color of the text rather than reading the word.</li>
+                    <li>Try to make quick decisions to maximize your score within the time limit.</li>
                   </div>
+                </div>
+
+                </p>
+                <div class="modal-action">
+                  <label for="my_modal_6" class="btn">Close!</label>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
 
-        <div class="text-white" v-if="modeGame && !playerPage">
-          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded" @click="changeTime('easy')">Easy</button>
-          <button class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 border border-yellow-700 rounded" @click="changeTime('medium')">Medium</button>
-          <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded" @click="changeTime('hard')">Hard</button>
-        </div>
-
-        <div v-if="gameInProgress && playGame && !modeGame">
-          <!-- <h1 v-show="correct == true"> Great !</h1> -->
+        <div v-if="gameInProgress">
           <div class=" justify-end text-red-500">
             <button @click="closeTheGame">
               <MaterialSymbolsCancel />
             </button>
           </div>
-          <div v-show="timer > 0">
+        </div>
+
+        <!-- เขียนชื่อ -->
+        <div v-if="playerPage && !gameInProgress" class=" flex justify-self-center">
+            <div class=" flex flex-col items-center space-y-5  bg-[#E9BCB9] rounded-lg w-fit p-3">
+              <div class=" text-black text-4xl font-bold ">Enter you name :</div>
+              <span><input type="text" class="text-3xl rounded-md bg-white" v-model="namePlayer"></span>
+              <span class="text-red-500 font-bold" v-if="namePlayer.length === 0">**Please type your name**</span>
+              <div class=" flex space-x-3">
+                <button @click="closeTheGame" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded ">Back</button>
+                <button @click="clickToSelectMode" :class=" namePlayer.length === 0 ? 'bg-white text-gray-300 font-bold py-2 px-4 border border-gray-500 rounded' : 'bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded'  "
+                  :disabled="namePlayer.length === 0">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-white" v-if="modeGame">
+          <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded"
+            @click="changeMode('easy')">Easy</button>
+          <button
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 border border-yellow-700 rounded"
+            @click="changeMode('medium')">Medium</button>
+          <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded"
+            @click="changeMode('hard')">Hard</button>
+        </div>
+
+        <div v-if="gameInProgress && !modeGame">
+          <!-- <h1 v-show="correct == true"> Great !</h1> -->
+
+          <div v-if="timer > 0">
             <h1 class=" bg-white">Name : {{ namePlayer }}</h1>
             <h1 class=" bg-white">Score: {{ score }}</h1>
             <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
-            <div class="progressBar" :style="{ width: progressWidth }"></div>
+            <div class="progressBar " :style="{ 'width': progressWidth, 'transition': 'all 1000ms ease-out' }">{{ timer
+            }}</div>
             <div class=" color" :style="{ 'background-color': 'white', color: data.randomColor }">
               <span class="m-auto ">{{ data.randomColorName }}</span>
             </div>
@@ -324,6 +313,14 @@ const selectedMode = () => {
   background-color: white;
   padding: 10px;
   margin: 6px;
+}
+
+.buttonClick1 {
+  border-radius: 50px;
+  font-size: 100px;
+  padding: 8px;
+  margin: 0px 550px 0px;
+  font-weight: 500;
 }
 
 .dot {
