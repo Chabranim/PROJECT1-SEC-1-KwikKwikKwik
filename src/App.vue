@@ -160,7 +160,7 @@ const clickToSelectMode = () => {
       </div>
     </div>
     <!-- tag side -->
-    <div class="space-x-3 h-[80%] mx-[5%] my-[5%] flex ">
+    <div class="space-x-3 h-[80%] mx-[5%] my-[3%] flex ">
       <div class="w-full bg-gradient-to-l from-[#B296FF] to-[#C1D2DC]  rounded-xl   h-full ">
         <div class="flex bg-[#492154] rounded-t-xl justify-end h-[7%]">
           <div class="flex space-x-2 justify-end m-2 p-1">
