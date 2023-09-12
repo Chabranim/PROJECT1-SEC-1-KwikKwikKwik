@@ -36,6 +36,7 @@ const modeGame = ref(false);
 // const playGame = ref(false)
 const timeOfMode = ref(0);
 let shuffledArray = ref([]);
+const valueOfMode = ref('')
 
 // 1
 const getRandomIndex = (max) => {
@@ -81,6 +82,7 @@ const startCountdownTimer = () => {
     if (timer.value >= 0) {
       progressWidth.value = (timer.value / timeOfMode.value) * 100 + "%";
       console.log(progressWidth.value);
+      console.log(timer.value);
     }
     if (timer.value < 0) {
       clearInterval(countdownTimer);
@@ -103,7 +105,9 @@ const changeMode = (mode) => {
   if (mode === "hard") {
     timeOfMode.value = 10;
   }
-  gameInProgress.value = true;
+  valueOfMode.value = mode.toUpperCase()
+  timer.value = timeOfMode.value;
+  // gameInProgress.value = true;
   progressWidth.value = "100%";
   startGame();
   startCountdownTimer();
@@ -114,7 +118,7 @@ const startGame = () => {
   gameInProgress.value = true;
   score.value = 0;
   modeGame.value = false;
-  timer.value = timeOfMode.value;
+  // timer.value = timeOfMode.value;
   generateRandomColor();
 };
 
@@ -284,7 +288,7 @@ const clickToSelectMode = () => {
                   <TwemojiArtist />
                   <div>: <b>{{ namePlayer }}</b></div>
                 </h1>
-                <h1 class="  flex flex-row text-[#1C1743] items-center font-bold "> Mode : {{  }}</h1>
+                <h1 class="  flex flex-row text-[#1C1743] items-center font-bold "> Mode : {{ valueOfMode }}</h1>
                 <h1 class=" flex flex-row text-[#1C1743] items-center space-x-1 "><div >Score :</div> <b >{{ score }}</b></h1>
               </div>
               <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
