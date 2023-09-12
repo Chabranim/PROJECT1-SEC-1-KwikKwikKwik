@@ -28,18 +28,15 @@ const data = reactive({
 let score = ref(0);
 let timer = ref(0);
 const gameInProgress = ref(false);
-// const gameOver = ref(false)
 const namePlayer = ref("");
 const playerPage = ref(false);
 const progressWidth = ref("");
 const modeGame = ref(false);
-// const playGame = ref(false)
 const timeOfMode = ref(0);
 let shuffledArray = ref([]);
 const valueOfMode = ref('')
 
-// 1
-//ying
+
 const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
 };
@@ -48,21 +45,19 @@ const generateRandomColor = () => {
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
 };
-//ying
 
 
-//2
-//kao
+
+
 const randomButton = () => {
   shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
     .map((value) => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: } map return new arr
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value); //return new array
 };
-//kao
 
-// 3
-//ying
+
+
 const checkColor = (color) => {
   console.log(color);
   if (color.toLowerCase() === data.randomColor) {
@@ -75,7 +70,7 @@ const checkColor = (color) => {
   generateRandomColor();
   randomButton();
 };
-//ying
+
 
 
 
@@ -85,31 +80,26 @@ onMounted(() => {
 });
 
 
-// 4
-//kla
+
 const startCountdownTimer = () => {
   let countdownTimer = setInterval(() => {
     timer.value--;
     if (timer.value >= 0) {
       progressWidth.value = (timer.value / timeOfMode.value) * 100 + "%";
-      // console.log(progressWidth.value);
-      // console.log(timer.value);
+
     }
     if (timer.value < 0) {
       clearInterval(countdownTimer);
-      // gameOver.value=false
       timer.value = 0;
       timeOfMode.value = 0;
     }
   }, 1000);
 };
-//kla
 
 
-//5
-//cb
+
+
 const changeMode = (mode) => {
-  console.log(mode);
   if (mode === "easy") {
     timeOfMode.value = 20;
   }
@@ -125,10 +115,8 @@ const changeMode = (mode) => {
   startGame();
   startCountdownTimer();
 };
-//cb
 
-// 6
-//kla
+
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0;
@@ -142,9 +130,8 @@ const gameOverEnd = () => {
   modeGame.value = true;
   generateRandomColor();
 };
-//kla
 
-//ying
+
 const closeTheGame = () => {
   gameInProgress.value = false;
   playerPage.value = false;
@@ -153,31 +140,21 @@ const closeTheGame = () => {
   score.value = 0;
   timer.value = 0;
 };
-//ying
 
-
-// bas
 const clickToNamePlayerPage = () => {
   playerPage.value = true;
 };
-// bas
 
-
-//cb
 const clickToSelectMode = () => {
   modeGame.value = true;
-  // playerPage.value = false
   gameInProgress.value = true;
 };
-//cb
+
 </script>
 
 <template>
-  <!-- default -->
-
 
   <div class="w-full h-screen bg-[url('../src/assets/FluentEmojiFlatPaintbrush.svg')] bg-white">
-    <!-- <div class="w-full h-auto"> -->
     <div class="bg-[#67274C] p-4 w-full h-[10%] ">
       <div class="flex items-center text-[#E9BCB9] space-x-2 justify-center">
         <span class="text-[#E9BCB9] text-4xl ml-5 font-extrabold">Click the color
@@ -198,12 +175,7 @@ const clickToSelectMode = () => {
         </div>
         <div class="h-[93%]">
           <div class=" flex flex-col pt-20   space-y-10" v-if="!gameInProgress && !playerPage">
-            <!-- <div class=" space-x-2 flex flex-col
-          bg-gradient-to-l from-green-200 to-[#C1D2DC] m-10">  
-          </div> -->
-            <!-- <img src="../src/assets/colorful-paint.jpg" width="500" height="250" class=" rounded-md"> -->
             <div class="space-x-2 flex justify-center">
-              <!-- <span class="dot1 bg-black "></span> -->
               <span class="dot1 bg-purple-600"></span>
               <span class="dot1  bg-pink-400"></span>
               <span class="dot1 bg-[#8FFF5A]"></span>
@@ -300,7 +272,6 @@ const clickToSelectMode = () => {
             </div>
           </div>
           <div v-if="gameInProgress && !modeGame" class="pt-12">
-            <!-- <h1 v-show="correct == true"> Great !</h1> -->
 
             <div v-if="timer > 0">
               <div class="flex  justify-between text-2xl p-1 px-3 bg-white mx-20 rounded-2xl">
@@ -311,14 +282,10 @@ const clickToSelectMode = () => {
                 <h1 class="  flex flex-row text-[#1C1743] items-center font-bold  "> Mode : <b>{{ valueOfMode }}</b></h1>
                 <h1 class=" flex flex-row text-[#1C1743] items-center space-x-1 "><div >Score :</div> <b >{{ score }}</b></h1>
               </div>
-              <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
               <div class="rounded-sm text-white font-semibold text-sm "
                :class="timer < 4 ? 'bg-red-500 h-5 mt-1.5' : 'progressBar'"
                 :style="{ 'width': progressWidth, 'transition': 'width 1500ms linear', 'margin-top': '6px' }">
               </div>
-              <!-- <div class=" color  " :style="{ 'background-color': 'white', color: data.randomColor }">
-              <span class="">{{ data.randomColorName }} </span>
-              </div> -->
               <div class=" strokeBack bg-white text-[170px] text-center p-0  mx-20  my-2 rounded-3xl"
                 :style="{ color: data.randomColor }">
                 <span> {{ data.randomColorName }} </span>
@@ -340,7 +307,6 @@ const clickToSelectMode = () => {
         </div>
       </div>
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
@@ -353,22 +319,8 @@ const clickToSelectMode = () => {
 .progressBar {
   background-color: #492154;
   height: 20px;
-  ;
 }
 
-/* .buttonClick {
-  background-color: white;
-  padding: 10px;
-  margin: 6px;
-} */
-
-/* .buttonClick1 { */
-/* border-radius: 50px;
-  font-size: 100px;
-  padding: 8px;
-  margin: 0px 550px 0px;
-  font-weight: 500; */
-/* } */
 
 .dot {
   height: 20px;
@@ -392,13 +344,6 @@ const clickToSelectMode = () => {
 }
 
 .strokeBack {
-  /* font-size: 170px; */
-  /* text-align: center; */
-  /* padding: 2px;
-  margin-top: 4%;
-  margin-left: 25%;
-  margin-right: 25%; */
-  /* border-radius: 25px; */
   -webkit-text-stroke: 2px black;
 }
 
@@ -407,12 +352,5 @@ const clickToSelectMode = () => {
 }
 
 .color2 {
-  /* font-size: 50px;
-  text-align: center;
-  padding: 2px;
-  margin-top: 4%;
-  margin-left: 20%;
-  margin-right: 20%;
-  border-radius: 25px; */
   -webkit-text-stroke: 2px black;
 }</style>
