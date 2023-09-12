@@ -5,6 +5,9 @@ import { onMounted } from "vue";
 
 import MaterialSymbolsCancel from "../src/assets/MaterialSymbolsCancel.vue";
 import PepiconsPopPaintPallet from "../src/assets/PepiconsPopPaintPallet.vue";
+import TwemojiArtist from "../src/assets/TwemojiArtist.vue"
+import TwemojiArtistPalette from "../src/assets/TwemojiArtistPalette.vue"
+import TwemojiBackhandIndexPointingDownMediumDarkSkinTone from "../src/assets/TwemojiBackhandIndexPointingDownMediumDarkSkinTone.vue"
 
 const data = reactive({
   words: [
@@ -156,7 +159,7 @@ const clickToSelectMode = () => {
         <span class="text-[#E9BCB9] text-4xl ml-5 font-extrabold">Click the color
           <span class="rounded-sm p-0.5 stroke text-red-600">NOT</span> the
           word</span>
-        <PepiconsPopPaintPallet />
+        <TwemojiArtistPalette />
       </div>
     </div>
     <!-- tag side -->
@@ -229,7 +232,7 @@ const clickToSelectMode = () => {
           </div>
 
           <div v-if="gameInProgress" class="relative ">
-            <div class="flex justify-end text-red-500 absolute top-0 right-0">
+            <div class="flex justify-end text-red-600 hover:text-red-700 hover:scale-110 absolute top-3 right-3.5">
               <button @click="closeTheGame">
                 <MaterialSymbolsCancel />
               </button>
@@ -240,10 +243,14 @@ const clickToSelectMode = () => {
           <div v-if="playerPage && !gameInProgress" class=" m-auto flex  items-center justify-center h-full  ">
 
             <div>
-              <div class=" flex flex-col items-center space-y-5  bg-[#E9BCB9] rounded-lg w-fit   p-3  ">
-                <div class=" text-black text-4xl font-bold ">Enter you name :</div>
-                <span><input type="text" class="text-3xl rounded-md bg-white" v-model="namePlayer"></span>
-                <span class="text-red-500 font-bold" v-if="namePlayer.length === 0">**Please type your name**</span>
+              <div
+                class=" flex flex-col items-center space-y-8 bg-gradient-to-r from-[#F9B57D] to-[#ECA9A5]   rounded-lg w-fit   p-20  ">
+                <div class=" text-black text-4xl font-bold  flex space-x-2 items-center">Enter your name <TwemojiBackhandIndexPointingDownMediumDarkSkinTone/></div>
+                <div class=" flex flex-col items-center space-y-1.5">
+                  <span><input type="text" class="text-2xl rounded-md bg-white p-2 text-black" placeholder="Your name"
+                      v-model="namePlayer"></span>
+                  <span class="text-red-500 font-bold" v-if="namePlayer.length === 0">**Please type your name**</span>
+                </div>
                 <div class=" flex space-x-3">
                   <button @click="closeTheGame"
                     class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded ">Back</button>
@@ -255,8 +262,9 @@ const clickToSelectMode = () => {
             </div>
           </div>
 
-          <div class="m-auto flex  items-center justify-center  h-full" v-if="modeGame">
-            <div class=" text-white flex flex-col mt-2 ">
+          <div class="m-auto flex flex-col items-center justify-center space-y-3 p-20" v-if="modeGame">
+            <h1 class="text-black text-4xl font-bold">Select Your Mode :</h1>
+            <div class=" text-white flex flex-col pt-4 space-y-3.5 w-40 text-2xl">
               <button
                 class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded"
                 @click="changeMode('easy')">Easy</button>
@@ -271,13 +279,20 @@ const clickToSelectMode = () => {
             <!-- <h1 v-show="correct == true"> Great !</h1> -->
 
             <div v-if="timer > 0">
-              <div class="flex justify-between text-2xl mx-8">
-                <h1 class=" bg-white">Name : {{ namePlayer }}</h1>
-                <h1 class=" bg-white">Score: {{ score }}</h1>
+              <div class="flex  justify-between text-2xl p-1 px-3 bg-white mx-20 rounded-2xl">
+                <h1 class=" flex flex-row items-center text-[#1C1743]">
+                  <TwemojiArtist />
+                  <div>: <b>{{ namePlayer }}</b></div>
+                </h1>
+                <h1 class="  flex flex-row text-[#1C1743] items-center font-bold "> Mode : {{  }}</h1>
+                <h1 class=" flex flex-row text-[#1C1743] items-center space-x-1 "><div >Score :</div> <b >{{ score }}</b></h1>
               </div>
               <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
-              <div class="progressBar " :style="{ 'width': progressWidth, 'transition': 'all 1000ms ease-out' }">{{ timer
-              }}</div>
+              <div class="rounded-sm"
+               :class="timer < 4 ? 'bg-red-500 h-5 mt-1.5' : 'progressBar'"
+                :style="{ 'width': progressWidth, 'transition': 'all 1500ms ease-in', 'margin-top': '6px' }">
+                {{ timer }}
+              </div>
               <!-- <div class=" color  " :style="{ 'background-color': 'white', color: data.randomColor }">
               <span class="">{{ data.randomColorName }} </span>
               </div> -->
@@ -285,18 +300,18 @@ const clickToSelectMode = () => {
                 :style="{ color: data.randomColor }">
                 <span> {{ data.randomColorName }} </span>
               </div>
-              <div class="flex space-x-4 px-4 justify-center mt-9">
+              <div class="flex space-x-4 px-4 justify-center mt-9  rounded-lg">
                 <div v-for="color in shuffledArray" :style="{ background: color }">
-                  <button @click="checkColor(color)" class="py-2 rounded-md buttonClick "
-                    :style="{ 'background-color': color.toLowerCase(), 'color': 'white', 'font-weight': 'bold' }">{{ color
+                  <button @click="checkColor(color)" class=" p-3 text-white font-bold text-3xl"
+                    :style="{ 'background-color': color.toLowerCase() }">{{ color
                     }}</button>
                 </div>
               </div>
             </div>
-            <div class=" strokeBack bg-white text-[50px] rounded-3xl text-center p-0.5 mt-[4%] mx-[20%] h-full" v-else>
-              Game over !
-              <div>{{ namePlayer }}'s score : {{ score }}</div>
-              <button class=" border border-black buttonClick " @click="gameOverEnd">Try again ?</button>
+            <div class=" bg-white text-[50px] rounded-3xl text-center p-2 mt-[4%] mx-[20%] h-full text-black space-y-2" v-else >
+              <h1 class=" text-red-500 font-extrabold text-[70px]">Game over !</h1>
+              <div><b>{{ namePlayer }}</b>'s score : <b class=" rounded-lg bg-red-300 p-2">{{ score }}</b></div>
+              <button class="rounded-xl p-2 buttonClick bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 border border-yellow-700 " @click="gameOverEnd">Try again ?</button>
             </div>
           </div>
         </div>
@@ -313,24 +328,24 @@ const clickToSelectMode = () => {
 }
 
 .progressBar {
-  background-color: aquamarine;
+  background-color: #492154;
   height: 20px;
+  ;
 }
 
-.buttonClick {
-  border-radius: 12px;
+/* .buttonClick {
   background-color: white;
   padding: 10px;
   margin: 6px;
-}
+} */
 
-.buttonClick1 {
-  /* border-radius: 50px;
+/* .buttonClick1 { */
+/* border-radius: 50px;
   font-size: 100px;
   padding: 8px;
   margin: 0px 550px 0px;
   font-weight: 500; */
-}
+/* } */
 
 .dot {
   height: 20px;
@@ -377,5 +392,4 @@ const clickToSelectMode = () => {
   margin-right: 20%;
   border-radius: 25px; */
   -webkit-text-stroke: 2px black;
-}
-</style>
+}</style>
