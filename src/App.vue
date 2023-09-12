@@ -50,10 +50,10 @@ const generateRandomColor = () => {
 
 
 const randomButton = () => {
-  shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
-    .map((value) => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: } map return new arr
+  shuffledArray.value = data.words 
+    .map((value) => ({ value, sort: Math.random() })) 
     .sort((a, b) => a.sort - b.sort)
-    .map(({ value }) => value); //return new array
+    .map(({ value }) => value);
 };
 
 
