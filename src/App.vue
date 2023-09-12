@@ -87,8 +87,7 @@ const startCountdownTimer = () => {
     if (timer.value >= 0) {
       progressWidth.value = (timer.value / timeOfMode.value) * 100 + "%";
 
-    }
-    if (timer.value < 0) {
+    }else if(timer.value < 0) {
       clearInterval(countdownTimer);
       timer.value = 0;
       timeOfMode.value = 0;
