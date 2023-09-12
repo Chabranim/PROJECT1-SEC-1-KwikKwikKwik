@@ -62,8 +62,8 @@ const checkColor = (color) => {
   if (color.toLowerCase() === data.randomColor) {
     score.value++;
   } else {
-    if (score < 0) {
-      score.value--;
+    if (score <= 0) {
+      score.value = 0
     }
   }
   generateRandomColor();
@@ -107,7 +107,6 @@ const changeMode = (mode) => {
   }
   valueOfMode.value = mode.toUpperCase()
   timer.value = timeOfMode.value;
-  // gameInProgress.value = true;
   progressWidth.value = "100%";
   startGame();
   startCountdownTimer();
@@ -118,12 +117,10 @@ const startGame = () => {
   gameInProgress.value = true;
   score.value = 0;
   modeGame.value = false;
-  // timer.value = timeOfMode.value;
   generateRandomColor();
 };
 
 const gameOverEnd = () => {
-  // gameOver.value = true
   score.value = 0;
   progressWidth.value = "0";
   modeGame.value = true;
@@ -209,7 +206,7 @@ const clickToSelectMode = () => {
                     </li>
                     <li>Your goal is to click on the word that matches the color of the text, not the text itself. For
                       example:
-                      - If the word "Red" is displayed in blue color, click on the word "Red."
+                      - If the word "Red" is displayed in blue color, click on the word "Blue."
                       - If the word "Green" is displayed in green color, click on the word "Green."
                     </li>
                     <li>Continue making selections as quickly as possible within the time limit.</li>
