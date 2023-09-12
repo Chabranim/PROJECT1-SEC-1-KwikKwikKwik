@@ -39,6 +39,7 @@ let shuffledArray = ref([]);
 const valueOfMode = ref('')
 
 // 1
+//ying
 const getRandomIndex = (max) => {
   return Math.floor(Math.random() * max);
 };
@@ -47,16 +48,21 @@ const generateRandomColor = () => {
   data.randomColorName = data.words[getRandomIndex(data.words.length)];
   data.randomColor = data.colors[getRandomIndex(data.colors.length)];
 };
+//ying
+
 
 //2
+//kao
 const randomButton = () => {
   shuffledArray.value = data.words //ให้ array เปล่า มาเก็บ array ชุดใหม่
     .map((value) => ({ value, sort: Math.random() })) // ทำ object มาเก็บ key ของ values, sort เช่น {values: } map return new arr
     .sort((a, b) => a.sort - b.sort)
     .map(({ value }) => value); //return new array
 };
+//kao
 
 // 3
+//ying
 const checkColor = (color) => {
   console.log(color);
   if (color.toLowerCase() === data.randomColor) {
@@ -69,20 +75,25 @@ const checkColor = (color) => {
   generateRandomColor();
   randomButton();
 };
+//ying
+
+
 
 onMounted(() => {
   generateRandomColor();
   randomButton();
 });
 
+
 // 4
+//kla
 const startCountdownTimer = () => {
   let countdownTimer = setInterval(() => {
     timer.value--;
     if (timer.value >= 0) {
       progressWidth.value = (timer.value / timeOfMode.value) * 100 + "%";
-      console.log(progressWidth.value);
-      console.log(timer.value);
+      // console.log(progressWidth.value);
+      // console.log(timer.value);
     }
     if (timer.value < 0) {
       clearInterval(countdownTimer);
@@ -92,8 +103,11 @@ const startCountdownTimer = () => {
     }
   }, 1000);
 };
+//kla
+
 
 //5
+//cb
 const changeMode = (mode) => {
   console.log(mode);
   if (mode === "easy") {
@@ -111,8 +125,10 @@ const changeMode = (mode) => {
   startGame();
   startCountdownTimer();
 };
+//cb
 
 // 6
+//kla
 const startGame = () => {
   gameInProgress.value = true;
   score.value = 0;
@@ -126,7 +142,9 @@ const gameOverEnd = () => {
   modeGame.value = true;
   generateRandomColor();
 };
+//kla
 
+//ying
 const closeTheGame = () => {
   gameInProgress.value = false;
   playerPage.value = false;
@@ -135,6 +153,8 @@ const closeTheGame = () => {
   score.value = 0;
   timer.value = 0;
 };
+//ying
+
 
 // bas
 const clickToNamePlayerPage = () => {
@@ -142,11 +162,14 @@ const clickToNamePlayerPage = () => {
 };
 // bas
 
+
+//cb
 const clickToSelectMode = () => {
   modeGame.value = true;
   // playerPage.value = false
   gameInProgress.value = true;
 };
+//cb
 </script>
 
 <template>
@@ -285,14 +308,13 @@ const clickToSelectMode = () => {
                   <TwemojiArtist />
                   <div>: <b>{{ namePlayer }}</b></div>
                 </h1>
-                <h1 class="  flex flex-row text-[#1C1743] items-center font-bold "> Mode : {{ valueOfMode }}</h1>
+                <h1 class="  flex flex-row text-[#1C1743] items-center font-bold  "> Mode : <b>{{ valueOfMode }}</b></h1>
                 <h1 class=" flex flex-row text-[#1C1743] items-center space-x-1 "><div >Score :</div> <b >{{ score }}</b></h1>
               </div>
               <!-- <h1 class=" bg-white">Timer : {{ timer }}</h1> -->
-              <div class="rounded-sm"
+              <div class="rounded-sm text-white font-semibold text-sm "
                :class="timer < 4 ? 'bg-red-500 h-5 mt-1.5' : 'progressBar'"
-                :style="{ 'width': progressWidth, 'transition': 'all 1500ms ease-in', 'margin-top': '6px' }">
-                {{ timer }}
+                :style="{ 'width': progressWidth, 'transition': 'width 1500ms linear', 'margin-top': '6px' }">
               </div>
               <!-- <div class=" color  " :style="{ 'background-color': 'white', color: data.randomColor }">
               <span class="">{{ data.randomColorName }} </span>
