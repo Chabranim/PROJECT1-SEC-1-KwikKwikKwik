@@ -28,8 +28,7 @@
 6. ผู้ใช้สามารถกด Try again เพื่อเริ่มเล่นใหม่ โดยหลังจากกดจะกลับไปหน้าเลือกโหมดเกมเพื่อเล่นเกมใหม่อีกครั้ง
 
 ###  ลิงค์คลิปสาธิต
-
-https://github.com/Chabranim/PROJECT1-SEC-1-KwikKwikKwik/assets/89179795/c5160b74-0dcd-470f-9f65-444f226067b5
+https://youtu.be/JrQVFVctVwg
 
 
 ### แหล่งอ้างอิง
