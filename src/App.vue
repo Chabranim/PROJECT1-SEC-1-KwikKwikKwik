@@ -243,7 +243,7 @@ const clickToSelectMode = () => {
                 <div class=" text-black text-4xl font-bold  flex space-x-2 items-center">Enter your name <TwemojiBackhandIndexPointingDownMediumDarkSkinTone/></div>
                 <div class=" flex flex-col items-center space-y-1.5">
                   <span><input type="text" class="text-2xl rounded-md bg-white p-2 text-black" placeholder="Your name"
-                      v-model="namePlayer"></span>
+                      v-model.trim="namePlayer"></span>
                   <span class="text-red-500 font-bold" v-if="namePlayer.length === 0">**Please type your name**</span>
                 </div>
                 <div class=" flex space-x-3">
